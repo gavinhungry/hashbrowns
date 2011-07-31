@@ -1,0 +1,5 @@
+hashbrowns provides a few common hashes for a given file.  It was designed for
+my use with Thunar's 'Custom Actions' context-menu feature.
+
+hashbrowns uses hashlib to generate hashes:
+http://docs.python.org/library/hashlib.html
