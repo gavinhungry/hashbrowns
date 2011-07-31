@@ -25,7 +25,7 @@ def hashbrowns(file):
 
   window.set_title('Hashbrowns: ' + os.path.basename(file))
   window.connect('key-press-event', lambda w,e: e.keyval == gtk.keysyms.Escape and gtk.main_quit())
-  window.connect("destroy", gtk.main_quit)
+  window.connect('destroy', gtk.main_quit)
   window.set_position(gtk.WIN_POS_CENTER)
   window.set_border_width(5)
   window.set_resizable(False)
@@ -36,7 +36,7 @@ def hashbrowns(file):
   hboxh = gtk.HBox(homogeneous=False, spacing=5)
 
   hashBox = gtk.Entry()
-  hashBox.modify_font(pango.FontDescription("monospace"))
+  hashBox.modify_font(pango.FontDescription('monospace'))
   hashBox.set_editable(False)
   hashBox.set_width_chars(48)
   hashBox.set_text('')
