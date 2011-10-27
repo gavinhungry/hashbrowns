@@ -29,7 +29,6 @@ def hashbrowns(file):
   window.set_position(gtk.WIN_POS_CENTER)
   window.set_border_width(5)
   window.set_resizable(False)
-  window.set_property('skip-taskbar-hint', True)
 
   vbox = gtk.VBox(homogeneous=False, spacing=5)
   hboxt = gtk.HBox(homogeneous=False, spacing=5)
