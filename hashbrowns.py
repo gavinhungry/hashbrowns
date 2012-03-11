@@ -2,7 +2,7 @@
 #
 # Name: hashbrowns
 # Auth: Gavin Lloyd <gavinhungry@gmail.com>
-# Date: 31 Jul 2011
+# Date: 31 Jul 2011 (last updated 11 Mar 2012)
 # Desc: Provides a few hashes for a file, intended for use in a context menu
 #
 
@@ -74,12 +74,19 @@ def checksum(button, file, hash, hashBox):
   for data in iter(lambda: fd.read(128 * m.block_size), ''):
     m.update(data)
 
-  hashBox.set_text(m.hexdigest())
+  hash = m.hexdigest()
+
+  hashBox.set_text(hash)
+  clipboard.set_text(hash)
+  clipboard.store()
+
   fd.close()
 
 
 
 if __name__ == '__main__':
+  clipboard = gtk.clipboard_get()
+
   if len(sys.argv) != 2:
     sys.exit('usage: ' + sys.argv[0] + ' FILE')
 
