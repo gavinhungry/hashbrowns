@@ -2,86 +2,101 @@
 #
 # Name: hashbrowns
 # Auth: Gavin Lloyd <gavinhungry@gmail.com>
-# Date: 31 Jul 2011 (last updated 11 Mar 2012)
-# Desc: Provides a few hashes for a file, intended for use in a context menu
+# Date: 31 Jul 2011 (last updated 05 May 2012)
+# Desc: Provides hashes for a file, intended for context menu
 #
 
 import os, sys
 import pygtk, gtk
 import hashlib
 import pango
-
-HASHES = {}
-HASHES['MD5'] = 'md5'
-HASHES['SHA1'] = 'sha1'
-HASHES['SHA256'] = 'sha256'
-HASHES['SHA512'] = 'sha512'
-HASHES['Whirlpool'] = 'whirlpool'
+import re
 
 
-def hashbrowns(file):
+class Hashbrowns:
 
-  window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+  def __init__(self, filename):
+    self.hash_algs = ['md5', 'sha1', 'sha256', 'sha512', 'whirlpool']
+    self.filename = filename
 
-  window.set_title('Hashbrowns: ' + os.path.basename(file))
-  window.connect('key-press-event', lambda w,e: e.keyval == gtk.keysyms.Escape and gtk.main_quit())
-  window.connect('destroy', gtk.main_quit)
-  window.set_position(gtk.WIN_POS_CENTER)
-  window.set_border_width(5)
-  window.set_resizable(False)
-
-  vbox = gtk.VBox(homogeneous=False, spacing=5)
-  hboxt = gtk.HBox(homogeneous=False, spacing=5)
-  hboxh = gtk.HBox(homogeneous=False, spacing=5)
-
-  hashBox = gtk.Entry()
-  hashBox.modify_font(pango.FontDescription('monospace'))
-  hashBox.set_editable(False)
-  hashBox.set_width_chars(48)
-  hashBox.set_text('')
-
-  hboxt.add(hashBox)
-
-  for hashName in sorted(HASHES):
+    # attempt to open the file for reading
     try:
-      hashlib.new(HASHES[hashName])
-    except ValueError:
-      sys.stderr.write(HASHES[hashName] + ': not supported, skipping\n')
-    else:
-      button = gtk.Button(hashName)
-      button.connect('clicked', checksum, file, HASHES[hashName], hashBox)
-      hboxh.add(button)
+      self.fd = open(self.filename, 'rb')
+    except IOError:
+      error = 'File is not readable: ' + self.filename;
+      dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
+                              buttons=gtk.BUTTONS_OK, 
+                              message_format=error)
+      dlg.run()
+      sys.exit(error)
 
-  vbox.add(hboxt)
-  vbox.add(hboxh)
+    # with the file opened, setup the window
+    window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    window.set_title('Hashbrowns: ' + os.path.basename(self.filename))
+    window.connect('key-press-event', lambda w,e:
+                   e.keyval == gtk.keysyms.Escape and gtk.main_quit())
+    window.connect('destroy', self.quit)
 
-  window.add(vbox)
-  window.show_all()
-  gtk.main()
+    window.set_position(gtk.WIN_POS_CENTER)
+    window.set_border_width(5)
+    window.set_resizable(False)
+
+    vbox  = gtk.VBox(homogeneous=False, spacing=5)
+    hboxt = gtk.HBox(homogeneous=False, spacing=5)
+    hboxh = gtk.HBox(homogeneous=False, spacing=5)
+
+    self.hash_box = gtk.Entry()
+    self.hash_box.modify_font(pango.FontDescription('monospace'))
+    self.hash_box.set_editable(False)
+    self.hash_box.set_width_chars(48)
+    hboxt.add(self.hash_box)      
+
+    # create button for each hash
+    for alg in sorted(self.hash_algs):
+      try:
+        hashlib.new(alg)
+      except ValueError:
+        sys.stderr.write(alg + ': not supported, skipping\n')
+      else:
+        # uppercase label for algorithms that end with a number, eg: SHA512
+        # capitalized labels for the rest, eg: Whirlpool
+        label = alg.upper() if re.search("\d$", alg) else alg.capitalize()
+        button = gtk.Button(label)
+
+        button.connect('clicked', self.get_hash, alg)
+        hboxh.add(button)
+
+    button = gtk.Button('Copy to Clipboard')
+    button.connect('clicked', self.copy)
+    hboxh.add(button)
+
+    vbox.add(hboxt)
+    vbox.add(hboxh)
+
+    window.add(vbox)
+    window.show_all()
+    gtk.main()
 
 
+  def get_hash(self, button, alg):
+    m = hashlib.new(alg)
 
-def checksum(button, file, hash, hashBox):
+    for data in iter(lambda: self.fd.read(128 * m.block_size), ''):
+      m.update(data)
 
-  try:
-    fd = open(file, 'rb')
-  except IOError:
-    hashBox.set_text('Can\'t open file')
-    return
+    self.hash = m.hexdigest()
+    self.hash_box.set_text(self.hash)
 
-  m = hashlib.new(hash)
 
-  for data in iter(lambda: fd.read(128 * m.block_size), ''):
-    m.update(data)
+  def copy(self, button):
+    if (len(self.hash) > 0):
+      clipboard.set_text(self.hash)
+      clipboard.store()
 
-  hash = m.hexdigest()
 
-  hashBox.set_text(hash)
-  clipboard.set_text(hash)
-  clipboard.store()
-
-  fd.close()
-
+  def quit(self, window):
+    self.fd.close()
+    gtk.main_quit()
 
 
 if __name__ == '__main__':
@@ -90,6 +105,5 @@ if __name__ == '__main__':
   if len(sys.argv) != 2:
     sys.exit('usage: ' + sys.argv[0] + ' FILE')
 
-  file = sys.argv[1]
-  hashbrowns(file)
+  Hashbrowns(sys.argv[1])
 
