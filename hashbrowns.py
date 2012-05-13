@@ -105,5 +105,5 @@ if __name__ == '__main__':
   if len(sys.argv) != 2:
     sys.exit('usage: ' + sys.argv[0] + ' FILE')
 
-  Hashbrowns(sys.argv[1])
+  hb = Hashbrowns(sys.argv[1])
 
