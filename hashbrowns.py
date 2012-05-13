@@ -2,7 +2,7 @@
 #
 # Name: hashbrowns
 # Auth: Gavin Lloyd <gavinhungry@gmail.com>
-# Date: 31 Jul 2011 (last updated 05 May 2012)
+# Date: 31 Jul 2011 (last updated 13 May 2012)
 # Desc: Provides hashes for a file, intended for context menu
 #
 
@@ -78,6 +78,7 @@ class Hashbrowns:
     gtk.main()
 
 
+  # hash file and place output in text box
   def get_hash(self, button, alg):
     m = hashlib.new(alg)
 
@@ -88,6 +89,7 @@ class Hashbrowns:
     self.hash_box.set_text(self.hash)
 
 
+  # copy to clipboard
   def copy(self, button):
     if (len(self.hash) > 0):
       clipboard.set_text(self.hash)
@@ -106,4 +108,3 @@ if __name__ == '__main__':
     sys.exit('usage: ' + sys.argv[0] + ' FILE')
 
   hb = Hashbrowns(sys.argv[1])
-
