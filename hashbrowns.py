@@ -2,7 +2,7 @@
 #
 # Name: hashbrowns
 # Auth: Gavin Lloyd <gavinhungry@gmail.com>
-# Date: 31 Jul 2011 (last updated 13 May 2012)
+# Date: 31 Jul 2011 (last updated 10 Aug 2012)
 # Desc: Provides hashes for a file, intended for context menu
 #
 
@@ -85,6 +85,7 @@ class Hashbrowns:
     for data in iter(lambda: self.fd.read(128 * m.block_size), ''):
       m.update(data)
 
+    self.fd.seek(0)
     self.hash = m.hexdigest()
     self.hash_box.set_text(self.hash)
 
