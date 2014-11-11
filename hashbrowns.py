@@ -2,7 +2,7 @@
 #
 # Name: hashbrowns
 # Auth: Gavin Lloyd <gavinhungry@gmail.com>
-# Date: 31 Jul 2011 (last updated 10 Aug 2012)
+# Date: 31 Jul 2011
 # Desc: Provides hashes for a file, intended for context menu
 #
 
@@ -25,7 +25,7 @@ class Hashbrowns:
     except IOError:
       error = 'File is not readable: ' + self.filename;
       dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
-                              buttons=gtk.BUTTONS_OK, 
+                              buttons=gtk.BUTTONS_OK,
                               message_format=error)
       dlg.run()
       sys.exit(error)
@@ -49,7 +49,7 @@ class Hashbrowns:
     self.hash_box.modify_font(pango.FontDescription('monospace'))
     self.hash_box.set_editable(False)
     self.hash_box.set_width_chars(48)
-    hboxt.add(self.hash_box)      
+    hboxt.add(self.hash_box)
 
     # create button for each hash
     for alg in sorted(self.hash_algs):
@@ -58,7 +58,7 @@ class Hashbrowns:
       except ValueError:
         sys.stderr.write(alg + ': not supported, skipping\n')
       else:
-        # uppercase label for algorithms that end with a number, eg: SHA512
+        # uppercase for algorithms that end with a number, eg: SHA512
         # capitalized labels for the rest, eg: Whirlpool
         label = alg.upper() if re.search("\d$", alg) else alg.capitalize()
         button = gtk.Button(label)
@@ -66,9 +66,13 @@ class Hashbrowns:
         button.connect('clicked', self.get_hash, alg)
         hboxh.add(button)
 
-    button = gtk.Button('Copy to Clipboard')
-    button.connect('clicked', self.copy)
-    hboxh.add(button)
+    cbButton = gtk.Button()
+    cbLabel = gtk.Label()
+    cbLabel.set_markup('<b>Copy to Clipboard</b>')
+    cbButton.add(cbLabel)
+
+    cbButton.connect('clicked', self.copy)
+    hboxh.add(cbButton)
 
     vbox.add(hboxt)
     vbox.add(hboxh)
