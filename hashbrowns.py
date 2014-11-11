@@ -3,7 +3,7 @@
 # Name: hashbrowns
 # Auth: Gavin Lloyd <gavinhungry@gmail.com>
 # Date: 31 Jul 2011
-# Desc: Provides hashes for a file, intended for context menu
+# Desc: Provides cryptographic hashes with a minimal UI
 #
 
 import os, sys

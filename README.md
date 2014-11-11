@@ -1,10 +1,15 @@
 hashbrowns
 ==========
-hashbrowns provides common hashes for a file.  It is intended for use within
-the context menu of a file manager (e.g. Thunar's *Custom Actions*).
+Provides cryptographic hashes with a minimal UI.
 
 
 Requirements
 ------------
 hashbrowns requires `hashlib` to generate hashes:
-http://docs.python.org/library/hashlib.html
+https://docs.python.org/2/library/hashlib.html
+
+
+License
+-------
+Released under the terms of the
+[MIT license](http://tldrlegal.com/license/mit-license). See **LICENSE**.
