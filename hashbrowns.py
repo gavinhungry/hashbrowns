@@ -2,7 +2,6 @@
 #
 # Name: hashbrowns
 # Auth: Gavin Lloyd <gavinhungry@gmail.com>
-# Date: 31 Jul 2011
 # Desc: Provides cryptographic hashes with a minimal UI
 #
 
@@ -11,7 +10,6 @@ import pygtk, gtk
 import hashlib
 import pango
 import re
-
 
 class Hashbrowns:
 
@@ -46,7 +44,7 @@ class Hashbrowns:
     hboxh = gtk.HBox(homogeneous=False, spacing=5)
 
     self.hash_box = gtk.Entry()
-    self.hash_box.modify_font(pango.FontDescription('monospace'))
+    self.hash_box.modify_font(pango.FontDescription('monospace 8'))
     self.hash_box.set_editable(False)
     self.hash_box.set_width_chars(48)
     hboxt.add(self.hash_box)
@@ -81,7 +79,6 @@ class Hashbrowns:
     window.show_all()
     gtk.main()
 
-
   # hash file and place output in text box
   def get_hash(self, button, alg):
     m = hashlib.new(alg)
@@ -93,13 +90,11 @@ class Hashbrowns:
     self.hash = m.hexdigest()
     self.hash_box.set_text(self.hash)
 
-
   # copy to clipboard
   def copy(self, button):
     if (len(self.hash) > 0):
       clipboard.set_text(self.hash)
       clipboard.store()
-
 
   def quit(self, window):
     self.fd.close()
