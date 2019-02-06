@@ -8,20 +8,27 @@
 import os, sys
 import pygtk, gtk
 import hashlib
+import sha3
 import pango
 import re
 
 class Hashbrowns:
 
+  def getHasher(self, alg):
+    try:
+      return getattr(hashlib, alg)()
+    except:
+      return hashlib.new(alg)
+
   def __init__(self, filename):
-    self.hash_algs = ['md5', 'sha1', 'sha256', 'sha512', 'whirlpool']
+    self.hash_algs = ['md5', 'sha1', 'sha256', 'sha512', 'sha3_256', 'sha3_512']
     self.filename = filename
 
     # attempt to open the file for reading
     try:
       self.fd = open(self.filename, 'rb')
     except IOError:
-      error = 'File is not readable: ' + self.filename;
+      error = 'File is not readable: ' + self.filename
       dlg = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
                               buttons=gtk.BUTTONS_OK,
                               message_format=error)
@@ -44,21 +51,23 @@ class Hashbrowns:
     hboxh = gtk.HBox(homogeneous=False, spacing=5)
 
     self.hash_box = gtk.Entry()
-    self.hash_box.modify_font(pango.FontDescription('monospace 8'))
+    self.hash_box.modify_font(pango.FontDescription('Ubuntu Mono 10'))
     self.hash_box.set_editable(False)
     self.hash_box.set_width_chars(48)
     hboxt.add(self.hash_box)
 
     # create button for each hash
-    for alg in sorted(self.hash_algs):
+    for alg in self.hash_algs:
       try:
-        hashlib.new(alg)
-      except ValueError:
+        self.getHasher(alg)
+      except:
         sys.stderr.write(alg + ': not supported, skipping\n')
       else:
         # uppercase for algorithms that end with a number, eg: SHA512
         # capitalized labels for the rest, eg: Whirlpool
         label = alg.upper() if re.search("\d$", alg) else alg.capitalize()
+        label = label.replace('_', '__')
+
         button = gtk.Button(label)
 
         button.connect('clicked', self.get_hash, alg)
@@ -81,7 +90,7 @@ class Hashbrowns:
 
   # hash file and place output in text box
   def get_hash(self, button, alg):
-    m = hashlib.new(alg)
+    m = self.getHasher(alg)
 
     for data in iter(lambda: self.fd.read(128 * m.block_size), ''):
       m.update(data)
