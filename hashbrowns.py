@@ -145,8 +145,8 @@ class Hashbrowns:
     self.update_check(self.hash_input)
 
   def update_check(self, _entry):
-    input_hash = self.hash_input.get_text().strip()
-    output_hash = self.hash_output.get_text().strip()
+    input_hash = self.hash_input.get_text().strip().lower()
+    output_hash = self.hash_output.get_text().strip().lower()
 
     is_empty = len(input_hash) == 0 or len(output_hash) == 0
     is_valid = self.hash_output.get_text() == input_hash
