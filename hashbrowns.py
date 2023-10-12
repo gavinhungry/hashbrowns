@@ -56,7 +56,7 @@ class Hashbrowns:
 
     hash_input_box = Gtk.HBox(homogeneous=False, spacing=4)
     self.hash_input = Gtk.Entry()
-    self.hash_input.override_font(Pango.FontDescription('Terminus 12'))
+    self.hash_input.override_font(Pango.FontDescription('JetBrains Mono 9'))
     self.hash_input.set_width_chars(48)
     self.hash_input.set_placeholder_text('Enter comparison hash')
     self.hash_input.connect('changed', self.update_check)
@@ -64,7 +64,7 @@ class Hashbrowns:
 
     hash_output_box = Gtk.HBox(homogeneous=False, spacing=4)
     self.hash_output = Gtk.Entry()
-    self.hash_output.override_font(Pango.FontDescription('Terminus 12'))
+    self.hash_output.override_font(Pango.FontDescription('JetBrains Mono 9'))
     self.hash_output.set_editable(False)
     self.hash_output.set_width_chars(48)
     hash_output_box.add(self.hash_output)
